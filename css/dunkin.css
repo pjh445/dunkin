@@ -1,0 +1,221 @@
+@charset "utf-8";
+
+* {
+    margin:0; padding:0; box-sizing: border-box;
+}
+::-webkit-scrollbar {width:0;}
+
+body, input, button, select, p {
+    font-family: "Asta Sans", sans-serif;
+}
+
+/*상단(header)*/
+header {
+    background: url('../images/background.jpg') repeat-x;
+    position: fixed; width:100%; 
+    box-shadow: 0 -10px 20px rgba(0,0,0,  0.3) inset; 
+}
+header ul {
+    display: flex; justify-content: space-evenly;
+    list-style: none; align-items: center;
+    max-width:1450px; margin:auto;
+}
+header li {
+    position: relative;
+}
+
+header li:nth-child(1) { /*중앙로고*/
+    order:4; max-width:40%;
+}
+header img { /*중앙로고 이미지*/
+    display: block; width:100%;
+}
+header li:nth-child(2) {order:1;}
+header li:nth-child(3) {order:2;}
+header li:nth-child(3) nav {width:300%;}
+header li:nth-child(4) {order:3;}
+header li:nth-child(4) nav {width:550%;}
+header li:nth-child(5) {order:5;}
+header li:nth-child(5) nav {width:200%;}
+header li:nth-child(6) {order:6;}
+header li:nth-child(7) {order:7;}
+header li:nth-child(7) nav {width:250%;}
+header li:nth-child(8) {
+    order:8; display:flex;  justify-content: space-between;
+}
+
+header a {
+    color:#3d332e; text-decoration: none;
+    font-size:1.2rem;
+}
+/*상단 모바일로고 */
+header nav.mobile {
+    display:none;
+}
+
+/*모든 메인메뉴*/
+header li>a {
+    font-family: 'Debussy', sans-serif; display: block;
+                                                
+
+}
+/*서브가 존재하는 메인메뉴*/
+a.mainmenu {
+    padding:10px 20px;
+}
+/*서브메뉴*/
+a.mainmenu+nav {
+    position: absolute; font-weight: 600;
+    z-index: 1; padding-top:70px;
+    font-size:1.2rem; display:none;
+}
+a.mainmenu+nav.active {
+    display: block;
+}
+
+a.mainmenu+nav a {
+    padding-right:10px; display: inline-block; opacity:0;
+}
+a.mainmenu+nav a.active {
+    animation:up 0.5s 0.1s both ;
+}
+@keyframes up {
+    from {opacity:0; transform:translateY(20px); }
+    to   {opacity:1; transform:translateY(0); }
+}
+
+/*상단메뉴 오른쪽 햄버거 ▤ 아이콘*/
+header button#menu {
+    display: none;
+}
+
+/*모바일화면에서 메뉴 하단 SNS 아이콘부분*/
+header nav#sns { 
+    display:none;
+}
+
+/*상단 오른쪽 (창업문의) 버튼*/
+header button#radio {
+    background:#c43663; padding:5px 7px; width:110px;
+    box-shadow: -2px -2px 5px rgba(0,0,0, 0.4) inset;
+    border:none; color:white; border-radius:30px;
+    font-weight: 600; font-size:1.1rem; 
+    display: flex; justify-content: space-between;
+    align-items: center;
+}
+header button#radio span {
+    width:25px; height:25px; border-radius:50%;
+    background:white; display: inline-block;
+    position: relative; left:0; 
+    transition: 0.5s;
+}
+header button#radio b {
+    position: relative; left:0px; display: inline-block;
+    transition: 0.5s;
+}
+/*(창업문의)버튼을 클릭했을때*/
+header button#radio.active{
+    background: #f06a00;
+}
+header button#radio.active span{
+   left:72px;
+}
+header button#radio.active b{
+   left:-30px;
+}
+
+/***********************************/
+@media(max-width:1279px) {
+    header li:nth-child(1) { /*중앙상단 모바일용 로고*/
+        max-width:30%;
+    } 
+    a.mainmenu { /*서브가 존재하는 메인메뉴*/
+        padding:10px;
+    }
+}
+@media(max-width:819px) {   
+    header ul {
+        flex-direction: column;
+        justify-content:flex-start ;
+        position:fixed; width:100%; 
+        top:60px; padding:20px 30px 0;
+        background: white; overflow: hidden auto;
+        height:0; opacity:0; 
+        transition: opacity 0.1s, height 0.5s;
+    }
+    header ul.active {
+        height:calc(100vh - 60px); opacity:1;
+    }
+    header li {
+        margin:20px; width:100%;
+        padding:0 5px;
+        border-bottom: 1px solid #ddd;  
+    }
+
+    header li:nth-child(1) { /*상단 PC용 로고 감추기*/
+        display:none;
+    }
+    /*상단 모바일용 로고 보이기 */
+    header nav.mobile {
+        display:flex; align-items: flex-end;
+        justify-content: center;
+    }
+    header nav.mobile> a {
+        max-width:260px;
+    }
+
+    
+    header button#menu { /*햄버거 아이콘*/
+        width:25px; height:30px;
+        display: block; margin:15px;
+        background: none; border:none;
+        position:absolute; right: 0px;
+    }  
+    header button#menu span {
+        display: block; width:100%; height:1.5pt;
+        background: #3d332e;
+        transition: 0.5s; position:absolute; 
+    }
+    header button#menu span:nth-child(1) {top:6px; }
+    header button#menu span:nth-child(2) {top:13px;}
+    header button#menu span:nth-child(3) {top:20px;}
+
+    header button#menu.active span:nth-child(1) { /* [ X ]버튼 */
+        transform: rotate(45deg); top:10px;
+        
+    }
+    header button#menu.active span:nth-child(2) {display:none;}
+    header button#menu.active span:nth-child(3) {  /* [ X ]버튼 */
+        transform: rotate(-45deg); top:10px;
+    }
+
+    a.mainmenu::after {
+        content:"\02C5"; font-size:3rem; color:#999;
+        float:right; height:initial; margin-top:-10px; padding-bottom:0;
+    }
+    a.mainmenu.active::after {content:"\02C4";}
+    a.mainmenu+nav {
+        position:relative; transition:0.5s; padding:0; padding-left:20px;
+        display:block; height:0; overflow: hidden;
+    }
+    a.mainmenu+nav.active {
+        height: 100px; padding-top:10px;
+    }
+    a.mainmenu+nav a.active {animation:none; /*애니 사용안함*/ }
+    header li:nth-child(4) a.mainmenu.active +nav.active { height: 250px;}
+    header li:nth-child(7) a.mainmenu.active +nav.active { height: 150px;}
+    a.mainmenu+nav a {
+        display:block; opacity:1; padding:10px 0;
+    }
+    header li:nth-child(8) {border:none;}
+    header button#radio { /*창업문의*/
+        float: right;
+    }
+    /*모바일화면에서 메뉴 하단 SNS 아이콘부분*/
+    header nav#sns {  
+        width:130px; display: flex; 
+        justify-content: space-between;
+    }
+    header nav#sns a {width:40px;}
+
+}
