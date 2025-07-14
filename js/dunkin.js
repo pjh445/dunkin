@@ -121,115 +121,156 @@ document.addEventListener("DOMContentLoaded" , ()=> {
     });
 
 
-	//NEW & EVENT 슬라이드-------------------------------
-	const new_event_slide = document.querySelector('#new_event .slide');
-	let new_event_a = document.querySelectorAll("#new_event .slide a");
-	const new_event_bar = document.querySelectorAll('#new_event .pos_bar button');
-	let bar_num = 0;
+	// NEW & EVENT 슬라이드
+    const new_event_slide = document.querySelector('#new_event .slide');
+    let new_event_a = document.querySelectorAll("#new_event .slide a");
+    const new_event_bar = document.querySelectorAll('#new_event .pos_bar button');
+    let bar_num = 0;
 
-	let isSliding = false;
-	let autoSlideInterval;
-	const autoSlideDelay = 2600;
+    let isSliding = false;
+    let autoSlideInterval;
+    const autoSlideDelay = 2600;
 
-	// 왼쪽 슬라이드 (다음)
-	new_event_slide.style.left = "-75%";
-	const toLeft_new = () => {
-		if (isSliding) return;
-		isSliding = true;		
+    // 초기 위치 설정
+    new_event_slide.style.left = "-75%";
 
-		new_event_slide.style.transition = "left 1s";
-		new_event_slide.style.left = "-125%";		
+    // 왼쪽 슬라이드 (다음)
+    const toLeft_new = () => {
+        if (isSliding) return;
+        isSliding = true;
 
-		new_event_a.forEach(i => i.classList.remove('active'));
-		new_event_a[3].classList.add('active');
+        new_event_slide.style.transition = "left 1s";
+        new_event_slide.style.left = "-125%";
 
-		setTimeout(() => {
-			new_event_slide.style.transition = "none";
-			new_event_slide.append(new_event_slide.firstElementChild);
-			new_event_slide.style.left = "-75%";
+        new_event_a.forEach(i => i.classList.remove('active'));
+        new_event_a[3].classList.add('active');
 
-			new_event_a = document.querySelectorAll("#new_event .slide a");
-			new_event_a[2].classList.add('active');
+        setTimeout(() => {
+            new_event_slide.style.transition = "none";
+            new_event_slide.append(new_event_slide.firstElementChild);
+            new_event_slide.style.left = "-75%";
 
-			bar_num = (bar_num + 1) % new_event_bar.length;
-			new_event_bar.forEach(i => i.classList.remove('active'));
-			new_event_bar[bar_num].classList.add('active');
+            new_event_a = document.querySelectorAll("#new_event .slide a");
+            new_event_a[2].classList.add('active');
 
-			isSliding = false;
-		}, 1000);
-	};
+            bar_num = (bar_num + 1) % new_event_bar.length;
+            new_event_bar.forEach(i => i.classList.remove('active'));
+            new_event_bar[bar_num].classList.add('active');
 
-	// 오른쪽 슬라이드 (이전)
-	const toRight_new = () => {
-		if (isSliding) return;
-		isSliding = true;
+            isSliding = false;
+        }, 1000);
+    };
 
-		new_event_slide.style.transition = "left 1s";
-		new_event_slide.style.left = "-25%";
-		
-		new_event_a.forEach(i => i.classList.remove('active'));
-		new_event_a[1].classList.add('active');
+    // 오른쪽 슬라이드 (이전)
+    const toRight_new = () => {
+        if (isSliding) return;
+        isSliding = true;
 
-		// 이동 후 정리
-		setTimeout(() => {
-			
-			new_event_slide.style.transition = "none";
-			new_event_slide.style.left = "-75%";
-			new_event_slide.prepend(new_event_slide.lastElementChild);						
-			
-			new_event_a = document.querySelectorAll("#new_event .slide a");
-			new_event_a.forEach(i => i.classList.remove('active'));
-			new_event_a[2].classList.add('active'); // 다시 중앙
+        new_event_slide.style.transition = "left 1s";
+        new_event_slide.style.left = "-25%";
 
-			bar_num = (bar_num - 1 + new_event_bar.length) % new_event_bar.length;
-			new_event_bar.forEach(i => i.classList.remove('active'));
-			new_event_bar[bar_num].classList.add('active');
+        new_event_a.forEach(i => i.classList.remove('active'));
+        new_event_a[1].classList.add('active');
 
-			isSliding = false;
-		}, 1000);
-	};
+        setTimeout(() => {
+            new_event_slide.style.transition = "none";
+            new_event_slide.prepend(new_event_slide.lastElementChild);
+            new_event_slide.style.left = "-75%";
+
+            new_event_a = document.querySelectorAll("#new_event .slide a");
+            new_event_a.forEach(i => i.classList.remove('active'));
+            new_event_a[2].classList.add('active');
+
+            bar_num = (bar_num - 1 + new_event_bar.length) % new_event_bar.length;
+            new_event_bar.forEach(i => i.classList.remove('active'));
+            new_event_bar[bar_num].classList.add('active');
+
+            isSliding = false;
+        }, 1000);
+    };
+
+    // 자동 슬라이드
+    const startAutoSlide = () => {
+        autoSlideInterval = setInterval(toLeft_new, autoSlideDelay);
+    };
+
+    const stopAutoSlide = () => {
+        clearInterval(autoSlideInterval);
+    };
+
+    startAutoSlide();
+
+    // ✅ 터치 + 마우스 방향 감지 이벤트
+    let startX = 0;
+    let endX = 0;
+    let isDragging = false;
+
+    // 방향 감지 후 슬라이드
+    function handleSwipe(deltaX) {
+        if (Math.abs(deltaX) > 50 && !isSliding) {
+            if (deltaX < 0) {
+                toLeft_new();
+            } else {
+                toRight_new();
+            }
+        }
+    }
+    
+
+    // 터치 이벤트
+    new_event_slide.addEventListener('touchstart', e => {
+        stopAutoSlide();
+        startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    new_event_slide.addEventListener('touchend', e => {
+        endX = e.changedTouches[0].clientX;
+        const deltaX = endX - startX;
+        handleSwipe(deltaX);
+        setTimeout(startAutoSlide, 3000);
+    }, { passive: true });
 
 
-	const startAutoSlide = () => {
-		autoSlideInterval = setInterval(toLeft_new, autoSlideDelay);
-	};
+    // 마우스 이벤트
+    new_event_slide.addEventListener('mousedown', e => {
+    stopAutoSlide();
+    isDragging = true;
+    startX = e.clientX;
+    });
 
-	const stopAutoSlide = () => {
-		clearInterval(autoSlideInterval);
-	};
+    new_event_slide.addEventListener('mousemove', e => {
+    if (!isDragging || isSliding) return;
+    
+    const currentX = e.clientX;
+    const deltaX = currentX - startX;
 
-	startAutoSlide();
+    if (Math.abs(deltaX) > 50) {
+        // 드래그 한쪽 방향으로 슬라이드 실행
+        if (deltaX < 0) {
+        toLeft_new();
+        } else {
+        toRight_new();
+        }
+        isDragging = false;  // 한 번 슬라이드 실행 후 드래그 종료 처리
+        setTimeout(startAutoSlide, 3000);
+    }
+    });
 
-	// 터치 이벤트
-	let startX = 0;
-	let endX = 0;
+    new_event_slide.addEventListener('mouseup', e => {
+    if (isDragging) {
+        isDragging = false;
+        setTimeout(startAutoSlide, 3000);
+    }
+    });
 
-	new_event_slide.addEventListener('touchstart', e => {
-		stopAutoSlide();
-		startX = e.touches[0].clientX;
-	}, { passive: true });
-
-	new_event_slide.addEventListener('touchend', e => {
-		endX = e.changedTouches[0].clientX;
-		const deltaX = endX - startX; //처음손가락의 X위치 - 마지막손가락의 X위치
-
-		// 50픽셀 이상 손가락을 이동했을 때만 슬라이드 동작 (실수 방지용) 
-		if (Math.abs(deltaX) > 50 && !isSliding) {
-
-			// 왼쪽으로 스와이프(터치) 한 경우 (다음 슬라이드로 이동)
-			if (deltaX < 0) {
-				toLeft_new(); 
-			} 
-			
-			// 오른쪽으로 스와이프(터치) 한 경우 (이전 슬라이드로 이동)
-			else {
-				toRight_new(); 
-			}
-		}
+    new_event_slide.addEventListener('mouseleave', e => {
+    if (isDragging) {
+        isDragging = false;
+        setTimeout(startAutoSlide, 3000);
+    }
+    });
 
 
-		setTimeout(startAutoSlide, 3000);
-	}, { passive: true });
 
 
 
